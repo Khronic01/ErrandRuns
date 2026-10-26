@@ -1,0 +1,4 @@
+# MVP 1 is a static site: no build step.
+[build]
+  publish = "."
+  command = ""

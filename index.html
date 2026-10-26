@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en-NG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Errand Runs Lagos | Send us. We'll run it.</title>
+<meta name="description" content="Errands and deliveries in Lagos. Tell us what needs doing and order straight on WhatsApp. Groceries, pickups, queues, parcels.">
+<meta name="theme-color" content="#ffc72c">
+<link rel="icon" href="assets/icon-192.png">
+<!-- Visitor and button-tap counts: errandruns.goatcounter.com (no cookies) -->
+<script data-goatcounter="https://errandruns.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<meta property="og:title" content="Errand Runs Lagos">
+<meta property="og:description" content="Skip the traffic. Order an errand on WhatsApp and a runner gets it done.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+@font-face {
+  font-family: "Archivo";
+  src: url("assets/archivo.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+}
+
+:root {
+  --danfo: #ffc72c;
+  --danfo-deep: #eba800;
+  --ink: #1a1d24;
+  --paper: #ffffff;
+  --mist: #f1f3f6;
+  --line: #d9dee4;
+  --muted: #5a6270;
+  --route: #0b7a55;
+  --wa: #1fae5b;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  font-stretch: 100%;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.5;
+}
+img, svg { display: block; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 6px; }
+
+.wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* Bus-side lettering: tall, heavy, tight. Headlines only. */
+.lettering {
+  font-stretch: 66%;
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.005em;
+  margin: 0;
+  text-wrap: balance;
+}
+h2.lettering { font-size: clamp(2.4rem, 6vw, 3.6rem); }
+.lede { font-size: 1.125rem; color: var(--muted); max-width: 34em; margin: 14px 0 0; }
+
+/* The two black bands every danfo carries. */
+.stripes {
+  height: 26px;
+  background: linear-gradient(var(--ink) 0 8px, transparent 8px 18px, var(--ink) 18px 26px);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 22px;
+  border: 2px solid var(--ink); border-radius: 999px;
+  font: inherit; font-weight: 700; font-size: 1.05rem; text-decoration: none;
+  cursor: pointer; transition: transform .15s ease, background-color .15s ease;
+}
+.btn:active { transform: translateY(1px) scale(.98); }
+.btn-ink { background: var(--ink); color: var(--paper); }
+.btn-ink:hover { background: #000; }
+.btn-line { background: transparent; color: var(--ink); }
+.btn-line:hover { background: rgba(26, 29, 36, .08); }
+.btn-wa { background: var(--wa); border-color: var(--wa); color: #fff; }
+.btn-wa:hover { background: #18984f; }
+.btn svg { width: 22px; height: 22px; flex: none; }
+
+/* ---------- header ---------- */
+.top { background: var(--danfo); }
+.nav { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 12px; }
+.mark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-stretch: 70%; font-size: 1.6rem; text-decoration: none; letter-spacing: .01em; }
+.mark-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 4px var(--danfo), 0 0 0 6px var(--ink); }
+.nav .btn { min-height: 44px; padding: 0 16px; font-size: .95rem; }
+
+/* ---------- hero ---------- */
+.hero { background: var(--danfo); padding: 28px 0 56px; }
+.hero-grid { display: grid; gap: 40px; align-items: center; }
+@media (min-width: 900px) { .hero-grid { grid-template-columns: 1.05fr .95fr; } .hero { padding: 48px 0 84px; } }
+.hero h1 { font-size: clamp(3.6rem, 13vw, 7.4rem); }
+.hero .lede { color: var(--ink); opacity: .85; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.areas-line { margin-top: 22px; font-size: .95rem; }
+
+/* the live run card */
+.run {
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 22px;
+  padding: 16px; box-shadow: 6px 6px 0 var(--ink);
+  max-width: 460px; justify-self: center; width: calc(100% - 6px); margin-right: 6px;
+}
+@media (min-width: 900px) { .run { box-shadow: 8px 8px 0 var(--ink); } }
+.run-head { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 4px 12px; }
+.run-head b { font-stretch: 75%; font-size: 1.25rem; }
+.run-head span { font-size: .85rem; color: var(--muted); }
+.map { position: relative; border-radius: 12px; background: var(--mist); overflow: hidden; }
+.map svg { width: 100%; height: auto; }
+.road { stroke: #fff; stroke-width: 14; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.road-edge { stroke: #dfe3e8; stroke-width: 18; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.route { stroke: var(--route); stroke-width: 6; fill: none; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: var(--len); stroke-dashoffset: calc(var(--len) * (1 - var(--p, 0)));
+  transition: stroke-dashoffset 1.6s cubic-bezier(.45,0,.2,1); }
+.pin text { font: 700 11px "Archivo", sans-serif; font-stretch: 85%; fill: var(--ink); }
+.rider {
+  offset-path: path("M58 214 H142 V132 H246 V58 H300");
+  offset-distance: calc(var(--p, 0) * 100%);
+  offset-rotate: 0deg;
+  transition: offset-distance 1.6s cubic-bezier(.45,0,.2,1), opacity .4s;
+  opacity: 0;
+}
+.run[data-step="2"] .rider, .run[data-step="3"] .rider, .run[data-step="4"] .rider { opacity: 1; }
+.done-badge { transform-box: fill-box; transform-origin: center; transform: scale(0); transition: transform .45s cubic-bezier(.3,1.6,.5,1); }
+.run[data-step="5"] .done-badge { transform: scale(1); }
+
+.steps { list-style: none; margin: 14px 0 0; padding: 0 4px; }
+.steps li { display: flex; align-items: center; gap: 12px; padding: 6px 0; color: var(--muted); transition: color .3s; }
+.steps li::before {
+  content: ""; flex: none; width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid var(--line); background: var(--paper); transition: background-color .3s, border-color .3s;
+}
+.steps li.on { color: var(--ink); font-weight: 600; }
+.steps li.on::before { background: var(--route); border-color: var(--route); }
+.steps li.now::before { box-shadow: 0 0 0 5px rgba(11,122,85,.18); }
+
+/* ---------- sections ---------- */
+section { padding: 72px 0; }
+@media (min-width: 900px) { section { padding: 104px 0; } }
+.split { display: grid; gap: 36px; }
+@media (min-width: 900px) { .split { grid-template-columns: 1fr 1.4fr; gap: 64px; } }
+
+.tasks { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.tasks li { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+@media (min-width: 640px) { .tasks li { grid-template-columns: 11rem 1fr; gap: 20px; align-items: baseline; } }
+.tasks b { font-stretch: 72%; font-weight: 800; font-size: 1.5rem; line-height: 1.1; }
+.tasks p { margin: 0; }
+.tasks .eg { color: var(--muted); font-size: .95rem; }
+
+.how { background: var(--mist); }
+.how-list { list-style: none; counter-reset: s; margin: 40px 0 0; padding: 0; display: grid; gap: 28px; }
+@media (min-width: 800px) { .how-list { grid-template-columns: repeat(3, 1fr); gap: 36px; } }
+.how-list li { counter-increment: s; }
+.how-list li::before {
+  content: counter(s); display: grid; place-items: center;
+  width: 46px; height: 46px; border-radius: 50%; background: var(--danfo); border: 2px solid var(--ink);
+  font-weight: 800; font-stretch: 75%; font-size: 1.3rem; margin-bottom: 14px;
+}
+.how-list h3 { margin: 0 0 6px; font-size: 1.2rem; }
+.how-list p { margin: 0; color: var(--muted); }
+
+/* ---------- order form ---------- */
+.order { background: var(--ink); color: var(--paper); }
+.order .lede { color: #c5cbd4; }
+.order-grid { display: grid; gap: 40px; margin-top: 40px; }
+@media (min-width: 960px) { .order-grid { grid-template-columns: 1.25fr .75fr; gap: 56px; align-items: start; } }
+form { display: grid; gap: 22px; }
+fieldset { border: 0; margin: 0; padding: 0; }
+legend, label.f { display: block; font-weight: 700; margin-bottom: 8px; }
+.hint { font-weight: 400; color: #aab2bd; font-size: .9rem; }
+.types { display: flex; flex-wrap: wrap; gap: 10px; }
+.types input { position: absolute; opacity: 0; pointer-events: none; }
+.types label {
+  display: inline-flex; align-items: center; min-height: 46px; padding: 0 18px;
+  border: 2px solid #4a515e; border-radius: 999px; cursor: pointer; font-weight: 600;
+  transition: background-color .15s, border-color .15s, color .15s, transform .15s;
+}
+.types label:hover { border-color: #8a93a1; }
+.types input:checked + label { background: var(--danfo); border-color: var(--danfo); color: var(--ink); }
+.types input:focus-visible + label { outline: 3px solid var(--danfo); outline-offset: 3px; }
+.row2 { display: grid; gap: 22px; }
+@media (min-width: 640px) { .row2 { grid-template-columns: 1fr 1fr; } }
+input.t, textarea, select {
+  width: 100%; min-height: 50px; padding: 12px 14px; border-radius: 10px;
+  border: 2px solid #3d4450; background: #232731; color: var(--paper);
+  font: inherit; font-size: 1rem;
+}
+textarea { min-height: 110px; resize: vertical; }
+input.t::placeholder, textarea::placeholder { color: #8a93a1; }
+input.t:focus, textarea:focus, select:focus { outline: none; border-color: var(--danfo); }
+.field-error { color: #ffb38a; font-size: .9rem; margin-top: 6px; display: none; }
+.invalid .field-error { display: block; }
+.invalid input.t, .invalid textarea { border-color: #ff8f57; }
+.reveal { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.reveal > div { overflow: hidden; visibility: hidden; transition: visibility 0s .3s; }
+.reveal.open { grid-template-rows: 1fr; }
+.reveal.open > div { overflow: visible; visibility: visible; transition: visibility 0s; }
+.check { display: flex; gap: 12px; align-items: center; cursor: pointer; font-weight: 600; }
+.check input { width: 22px; height: 22px; accent-color: var(--danfo); }
+.small { font-size: .9rem; color: #aab2bd; margin: 0; }
+.order .btn-wa { width: 100%; min-height: 58px; font-size: 1.1rem; }
+
+/* WhatsApp preview */
+.preview { position: sticky; top: 20px; }
+.preview h3 { margin: 0 0 12px; font-size: 1rem; color: #c5cbd4; font-weight: 600; }
+.chat { background: #0b141a; border-radius: 18px; padding: 16px; border: 1px solid #2c333d; }
+.chat-top { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #222a33; margin-bottom: 14px; }
+.chat-top .av { width: 36px; height: 36px; border-radius: 50%; background: var(--danfo); display: grid; place-items: center; color: var(--ink); font-weight: 800; font-stretch: 70%; }
+.chat-top b { display: block; font-size: .95rem; }
+.chat-top span { font-size: .8rem; color: #8696a0; }
+.bubble {
+  margin-left: auto; max-width: 92%; background: #005c4b; color: #e9edef;
+  padding: 10px 12px 18px; border-radius: 12px 12px 4px 12px; font-size: .92rem; line-height: 1.45;
+  white-space: pre-wrap; overflow-wrap: anywhere; position: relative;
+  animation: pop .25s ease;
+}
+.bubble::after { content: "now"; position: absolute; right: 10px; bottom: 4px; font-size: .7rem; color: #9fc9bf; }
+@keyframes pop { from { transform: scale(.97); opacity: .6; } to { transform: none; opacity: 1; } }
+
+/* ---------- trust + areas ---------- */
+.promises { display: grid; gap: 28px; margin: 40px 0 0; }
+@media (min-width: 800px) { .promises { grid-template-columns: repeat(2, 1fr); gap: 32px 56px; } }
+.promises dt { font-weight: 800; font-stretch: 78%; font-size: 1.35rem; line-height: 1.15; }
+.promises dd { margin: 6px 0 0; color: var(--muted); }
+.zones { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; padding: 0; list-style: none; }
+.zones li { padding: 10px 18px; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; background: var(--danfo); }
+.nogo { background: var(--mist); border-radius: var(--radius); padding: 20px 22px; margin-top: 28px; }
+.nogo b { display: block; margin-bottom: 4px; }
+.nogo p { margin: 0; color: var(--muted); }
+
+/* ---------- pricing, faq, runners ---------- */
+.pricing { display: grid; gap: 16px; margin-top: 56px; padding-top: 32px; border-top: 2px solid var(--ink); }
+@media (min-width: 800px) { .pricing { grid-template-columns: 1fr 1.4fr; gap: 64px; } }
+.pricing h3 { font-size: clamp(1.9rem, 4.4vw, 2.6rem); }
+.pricing p { margin: 0; max-width: 36em; }
+.factors { margin: 14px 0 18px; padding-left: 1.2em; }
+.factors li { padding: 3px 0; }
+.factors li::marker { color: var(--route); }
+.pricing .note { color: var(--muted); }
+
+.faq { border-top: 2px solid var(--ink); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 18px 0; font-weight: 700; font-size: 1.1rem;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: ""; flex: none; width: 12px; height: 12px; margin-right: 4px;
+  border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  transform: rotate(45deg) translate(-2px, -2px); transition: transform .25s ease;
+}
+.faq details[open] summary::after { transform: rotate(225deg) translate(-2px, -2px); }
+.faq details p { margin: 0 0 20px; color: var(--muted); max-width: 38em; }
+.faq details[open] p { animation: open .3s ease; }
+@keyframes open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+.runners { background: var(--ink); color: var(--paper); }
+.runners .lede { color: #c5cbd4; }
+.needs { list-style: none; margin: 0 0 28px; padding: 0; border-top: 2px solid var(--danfo); }
+.needs li { padding: 14px 0; border-bottom: 1px solid #3d4450; font-weight: 600; }
+.btn-danfo { background: var(--danfo); border-color: var(--danfo); color: var(--ink); }
+.btn-danfo:hover { background: var(--danfo-deep); border-color: var(--danfo-deep); }
+.runners :focus-visible { outline-color: var(--danfo); }
+
+/* ---------- footer ---------- */
+footer { background: var(--danfo); padding: 40px 0 32px; }
+.foot { display: grid; gap: 20px; }
+@media (min-width: 800px) { .foot { grid-template-columns: 1fr auto; align-items: end; } }
+.foot p { margin: 4px 0 0; }
+
+/* floating WhatsApp */
+.fab {
+  position: fixed; right: 16px; bottom: 16px; z-index: 20;
+  width: 60px; height: 60px; border-radius: 50%; background: var(--wa); color: #fff;
+  display: grid; place-items: center; box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  transform: scale(0); transition: transform .3s cubic-bezier(.3,1.5,.5,1);
+}
+.fab.show { transform: scale(1); }
+.fab svg { width: 30px; height: 30px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap nav">
+    <a class="mark" href="#top" aria-label="Errand Runs home"><span class="mark-dot" aria-hidden="true"></span>Errand Runs</a>
+    <a class="btn btn-ink" href="#order">Order an errand</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title" style="padding-top:28px">
+    <div class="wrap hero-grid">
+      <div>
+        <h1 id="hero-title" class="lettering">Skip the traffic. We'll run it.</h1>
+        <p class="lede">Groceries, pickups, queues and parcels across Lagos Mainland. Tell us what needs doing, agree the price on WhatsApp, and a verified runner gets it done while you get on with your day.</p>
+        <div class="hero-actions">
+          <a class="btn btn-ink" href="#order">Order an errand</a>
+          <a class="btn btn-line wa-direct" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#wa-icon"/></svg>Chat on WhatsApp
+          </a>
+        </div>
+        <p class="areas-line">Now running in Yaba, Surulere, Ebute Metta and Ikeja GRA.</p>
+      </div>
+
+      <figure class="run" id="run" data-step="0" aria-label="An example errand moving from a store in Yaba to a home in Surulere" style="margin:0">
+        <div class="run-head"><b>Buy &amp; bring</b><span>Yaba to Surulere</span></div>
+        <div class="map">
+          <svg viewBox="0 0 360 260" role="presentation">
+            <g>
+              <path class="road-edge" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132"/>
+              <path class="road" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132"/>
+            </g>
+            <rect x="160" y="150" width="70" height="46" rx="6" fill="#dde3e9"/>
+            <rect x="268" y="150" width="70" height="46" rx="6" fill="#dde3e9"/>
+            <rect x="160" y="76" width="70" height="38" rx="6" fill="#dde3e9"/>
+            <rect x="78" y="76" width="46" height="38" rx="6" fill="#d3ead9"/>
+            <rect x="16" y="150" width="108" height="46" rx="6" fill="#dde3e9"/>
+            <path class="route" id="route" d="M58 214 H142 V132 H246 V58 H300"/>
+            <g class="pin">
+              <circle cx="58" cy="214" r="11" fill="#1a1d24"/>
+              <path d="M53 210 h10 l-1.5 8 h-7 z" fill="#ffc72c"/>
+              <text x="58" y="244" text-anchor="middle">Supermarket</text>
+            </g>
+            <g class="pin">
+              <circle cx="300" cy="58" r="11" fill="#1a1d24"/>
+              <path d="M294 59 l6 -6 l6 6 v6 h-12 z" fill="#ffc72c"/>
+              <text x="300" y="32" text-anchor="middle">Your door</text>
+            </g>
+            <g class="rider" aria-hidden="true">
+              <circle r="13" fill="#ffc72c" stroke="#1a1d24" stroke-width="3"/>
+              <circle r="4" fill="#1a1d24"/>
+            </g>
+            <g class="done-badge">
+              <circle cx="300" cy="58" r="17" fill="#0b7a55"/>
+              <path d="M292 58 l6 6 l11 -12" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+          </svg>
+        </div>
+        <ol class="steps" id="steps">
+          <li>Order sent on WhatsApp</li>
+          <li>Price agreed, runner assigned</li>
+          <li>Runner at the supermarket</li>
+          <li>Bought, receipt photo sent to you</li>
+          <li>Delivered to your door</li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+  <div class="stripes" aria-hidden="true"></div>
+
+  <section aria-labelledby="what-title">
+    <div class="wrap split">
+      <div>
+        <h2 id="what-title" class="lettering">What a runner can do for you</h2>
+        <p class="lede">If it's a small physical task that eats half your day, send it to us. You get photo proof at each step.</p>
+      </div>
+      <ul class="tasks">
+        <li><b>Buy &amp; bring</b><p>Groceries, market items, pharmacy runs. <span class="eg">Send your list and budget; you get the receipt photo.</span></p></li>
+        <li><b>Pick up</b><p>Dry cleaning, a parcel at the park, items from a shop. <span class="eg">Give us the ticket number or contact at pickup.</span></p></li>
+        <li><b>Drop &amp; submit</b><p>Documents and forms delivered to an office. <span class="eg">We send back a stamped copy or photo.</span></p></li>
+        <li><b>Queue for me</b><p>Banks, offices, anywhere with a line. <span class="eg">Timestamped photos while we wait.</span></p></li>
+        <li><b>Send a parcel</b><p>You have the item; we move it from A to B the same day. <span class="eg">Photo at handover to the recipient.</span></p></li>
+        <li><b>Something else</b><p>Up to three stops in one run. <span class="eg">Describe it and we'll tell you if we can do it.</span></p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title" class="lettering">How ordering works</h2>
+      <ol class="how-list">
+        <li><h3>Fill the short form</h3><p>Pick the errand, where it starts and ends, and the details. It takes about a minute.</p></li>
+        <li><h3>Send it on WhatsApp</h3><p>Your order opens in WhatsApp, already written. We reply with the price before anyone moves.</p></li>
+        <li><h3>We run it</h3><p>A verified runner does the job and you get updates and photos on WhatsApp until it's done.</p></li>
+      </ol>
+      <div class="pricing">
+        <h3 class="lettering">Every errand is priced on its own</h3>
+        <div>
+          <p>There's no price list to guess from. Tell us the errand and we send you one price for the whole job before the runner moves. It depends on:</p>
+          <ul class="factors">
+            <li>How far apart the stops are</li>
+            <li>What the task involves: buying, collecting, queueing or waiting</li>
+            <li>How many stops there are</li>
+            <li>The size of what we're carrying</li>
+          </ul>
+          <p class="note">For Buy &amp; bring, you pay for the items on top of the errand price. Tell us your budget and you'll get a photo of the receipt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="order" id="order" aria-labelledby="order-title">
+    <div class="wrap">
+      <h2 id="order-title" class="lettering">Order an errand</h2>
+      <p class="lede">Fill this in and tap the button. WhatsApp opens with your order ready to send to us.</p>
+
+      <div class="order-grid">
+        <form id="orderForm" novalidate>
+          <fieldset>
+            <legend>What do you need?</legend>
+            <div class="types" id="types">
+              <input type="radio" name="type" id="t-buy" value="Buy & bring" checked><label for="t-buy">Buy &amp; bring</label>
+              <input type="radio" name="type" id="t-pick" value="Pick up"><label for="t-pick">Pick up</label>
+              <input type="radio" name="type" id="t-drop" value="Drop & submit"><label for="t-drop">Drop &amp; submit</label>
+              <input type="radio" name="type" id="t-queue" value="Queue for me"><label for="t-queue">Queue for me</label>
+              <input type="radio" name="type" id="t-send" value="Send a parcel"><label for="t-send">Send a parcel</label>
+              <input type="radio" name="type" id="t-other" value="Something else"><label for="t-other">Something else</label>
+            </div>
+          </fieldset>
+
+          <div class="row2">
+            <div data-field>
+              <label class="f" for="from" id="fromLabel">Where to buy from</label>
+              <input class="t" id="from" name="from" autocomplete="off" placeholder="e.g. Shoprite, Ozone Mall, Yaba" required>
+              <p class="field-error">Tell us where the runner should start.</p>
+            </div>
+            <div>
+              <label class="f" for="fromLandmark">Landmark <span class="hint">(optional)</span></label>
+              <input class="t" id="fromLandmark" name="fromLandmark" autocomplete="off" placeholder="e.g. opposite the bank">
+            </div>
+          </div>
+
+          <div class="reveal open" id="toBlock"><div>
+            <div class="row2">
+              <div data-field>
+                <label class="f" for="to" id="toLabel">Deliver to</label>
+                <input class="t" id="to" name="to" autocomplete="street-address" placeholder="Street address and area" required>
+                <p class="field-error">Tell us where it should end up.</p>
+              </div>
+              <div>
+                <label class="f" for="toLandmark">Landmark <span class="hint">(optional)</span></label>
+                <input class="t" id="toLandmark" name="toLandmark" autocomplete="off" placeholder="e.g. blue gate, beside the pharmacy">
+              </div>
+            </div>
+          </div></div>
+
+          <div data-field>
+            <label class="f" for="details" id="detailsLabel">Your shopping list</label>
+            <textarea id="details" name="details" placeholder="e.g. Peak milk 3-pack, 2 loaves of bread. If something isn't available, call me." required></textarea>
+            <p class="field-error">Add a few words so the runner knows exactly what to do.</p>
+          </div>
+
+          <div class="reveal open" id="budgetBlock"><div>
+            <label class="f" for="budget">Budget for the items <span class="hint">(₦, optional)</span></label>
+            <input class="t" id="budget" name="budget" inputmode="numeric" placeholder="e.g. 15000">
+          </div></div>
+
+          <div class="row2">
+            <div>
+              <label class="f" for="when">When</label>
+              <select id="when" name="when">
+                <option>As soon as possible</option>
+                <option>Later today</option>
+              </select>
+            </div>
+            <div class="reveal" id="timeBlock"><div>
+              <label class="f" for="time">What time?</label>
+              <input class="t" id="time" name="time" type="time" min="08:00" max="20:00">
+            </div></div>
+          </div>
+
+          <div data-field>
+            <label class="f" for="name">Your name</label>
+            <input class="t" id="name" name="name" autocomplete="name" placeholder="So we know who we're talking to" required>
+            <p class="field-error">Add your name.</p>
+          </div>
+
+          <label class="check"><input type="checkbox" id="someoneElse"> Someone else will receive it</label>
+          <div class="reveal" id="recipientBlock"><div>
+            <div class="row2">
+              <div data-field>
+                <label class="f" for="rName">Their name</label>
+                <input class="t" id="rName" name="rName" autocomplete="off">
+                <p class="field-error">Add the recipient's name.</p>
+              </div>
+              <div data-field>
+                <label class="f" for="rPhone">Their phone number</label>
+                <input class="t" id="rPhone" name="rPhone" type="tel" inputmode="tel" autocomplete="off" placeholder="080...">
+                <p class="field-error">Add a phone number we can reach them on.</p>
+              </div>
+            </div>
+          </div></div>
+
+          <button class="btn btn-wa" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#wa-icon"/></svg>Send order on WhatsApp
+          </button>
+          <p class="small">We reply with the price before anything starts. Open 8am to 8pm, Monday to Saturday.</p>
+        </form>
+
+        <aside class="preview" aria-labelledby="preview-title">
+          <h3 id="preview-title">Your message will look like this</h3>
+          <div class="chat">
+            <div class="chat-top"><div class="av" aria-hidden="true">ER</div><div><b>Errand Runs</b><span>0814 069 4034</span></div></div>
+            <div class="bubble" id="bubble" aria-live="polite"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="trust-title">
+    <div class="wrap">
+      <h2 id="trust-title" class="lettering">Built so nothing goes missing</h2>
+      <dl class="promises">
+        <div><dt>Verified runners</dt><dd>Every runner shows ID, has a guarantor we've spoken to, and does a trial run with us before taking jobs.</dd></div>
+        <div><dt>Price agreed first</dt><dd>No haggling at the door. We tell you the price on WhatsApp before the runner moves.</dd></div>
+        <div><dt>Photo proof</dt><dd>Receipts, pickups and handovers are photographed and sent to you as they happen.</dd></div>
+        <div><dt>Someone to call</dt><dd>One WhatsApp number for the whole job. If anything changes, like an item out of stock, we ask you first.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="how" aria-labelledby="areas-title">
+    <div class="wrap split">
+      <div>
+        <h2 id="areas-title" class="lettering">Where we run</h2>
+        <p class="lede">We're starting small so every job is done properly. More of Lagos is coming.</p>
+      </div>
+      <div>
+        <ul class="zones">
+          <li>Yaba</li><li>Surulere</li><li>Ebute Metta</li><li>Ikeja GRA</li>
+        </ul>
+        <p>Outside these areas? <a class="wa-direct" href="#" target="_blank" rel="noopener">Message us on WhatsApp</a> and we'll tell you when we reach you.</p>
+        <div class="nogo">
+          <b>What we won't carry</b>
+          <p>Weapons, drugs, cash deliveries, live animals, anything hazardous or illegal, and controlled medicines without a valid prescription.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="faq-title">
+    <div class="wrap split">
+      <div>
+        <h2 id="faq-title" class="lettering">Questions people ask</h2>
+        <p class="lede">Anything else, <a class="wa-direct" href="#" target="_blank" rel="noopener">ask us on WhatsApp</a>.</p>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>How much does an errand cost?</summary>
+          <p>Every errand is priced on its own, based on distance, what the task involves, the number of stops and the size of what we carry. Send your order and we reply with one price before anything starts.</p>
+        </details>
+        <details>
+          <summary>How do I pay?</summary>
+          <p>Once you're happy with the price, we send payment details in the chat. The runner sets off after payment. For Buy &amp; bring, the item budget is paid at the same time, and any change is returned to you.</p>
+        </details>
+        <details>
+          <summary>What if an item isn't available?</summary>
+          <p>The runner messages you before buying anything different. You choose a replacement or skip it. We never swap items without asking.</p>
+        </details>
+        <details>
+          <summary>Can I cancel?</summary>
+          <p>Yes. Cancelling before the runner sets off is free. After that, you pay for the trip already made and for any items already bought.</p>
+        </details>
+        <details>
+          <summary>Is there a limit on what you'll carry?</summary>
+          <p>We carry items worth up to ₦100,000 per errand, on a bike or on foot, so nothing bigger than a medium box. See the list above for what we won't carry at all.</p>
+        </details>
+        <details>
+          <summary>Can I order for someone else?</summary>
+          <p>Yes, including from outside Nigeria. Tick "Someone else will receive it" on the form and add their name and number. We keep both of you updated.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="runners" aria-labelledby="runners-title">
+    <div class="wrap split">
+      <div>
+        <h2 id="runners-title" class="lettering">Run errands with us</h2>
+        <p class="lede">Have a bike, or know your way around on foot? Earn per errand, and know what you'll make before you accept a job.</p>
+      </div>
+      <div>
+        <ul class="needs">
+          <li>A smartphone with WhatsApp</li>
+          <li>A valid ID, such as your NIN slip</li>
+          <li>One guarantor we can call</li>
+          <li>A short onboarding session and a trial errand</li>
+        </ul>
+        <a class="btn btn-danfo" id="runnerApply" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#wa-icon"/></svg>Apply on WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="stripes" aria-hidden="true"></div>
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="mark" href="#top"><span class="mark-dot" aria-hidden="true"></span>Errand Runs</a>
+      <p>Errands and deliveries in Lagos. Open 8am to 8pm, Monday to Saturday.</p>
+    </div>
+    <a class="btn btn-ink wa-direct" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#wa-icon"/></svg>0814 069 4034
+    </a>
+  </div>
+</footer>
+
+<a class="fab wa-direct" id="fab" href="#" target="_blank" rel="noopener" aria-label="Chat with Errand Runs on WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#wa-icon"/></svg>
+</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wa-icon" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12.04 2a9.9 9.9 0 0 0-8.45 15.05L2.5 21.5l4.57-1.07A9.9 9.9 0 1 0 12.04 2Zm0 18.04a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-2.71.64.66-2.64-.2-.31a8.12 8.12 0 1 1 6.68 3.62Zm4.45-6.08c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.44-1.35-1.69-.14-.24-.02-.37.11-.49.11-.11.24-.28.36-.43.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.43-.06-.12-.55-1.33-.76-1.82-.2-.48-.4-.41-.55-.42h-.47a.9.9 0 0 0-.65.3c-.22.24-.85.83-.85 2.03s.87 2.35.99 2.52c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.47-.28Z"/>
+  </symbol>
+</svg>
+
+<script>
+(function () {
+  // Orders go to this WhatsApp number (0814 069 4034, Nigeria +234).
+  var WHATSAPP = "2348140694034";
+
+  function waLink(text) {
+    return "https://wa.me/" + WHATSAPP + (text ? "?text=" + encodeURIComponent(text) : "");
+  }
+
+  // Count a button tap as an event on the GoatCounter dashboard.
+  function track(name, title) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) {
+        window.goatcounter.count({ path: name, title: title || name, event: true });
+      }
+    } catch (e) { /* counting must never block an order */ }
+  }
+
+  document.querySelectorAll(".wa-direct").forEach(function (a) {
+    a.href = waLink("Hello Errand Runs, I'd like to ask about an errand.");
+    a.addEventListener("click", function () { track("whatsapp-chat", "Tapped Chat on WhatsApp"); });
+  });
+
+  document.getElementById("runnerApply").href = waLink(
+    "Hello Errand Runs, I'd like to become a runner.\n\n*My name:* \n*Area I live in:* \n*I run on:* bike / foot");
+  document.getElementById("runnerApply").addEventListener("click", function () {
+    track("runner-apply", "Tapped Apply on WhatsApp (runner)");
+  });
+
+  /* ---------- hero: one errand, start to finish ---------- */
+  var run = document.getElementById("run");
+  var route = document.getElementById("route");
+  var steps = document.querySelectorAll("#steps li");
+  var len = route.getTotalLength();
+  run.style.setProperty("--len", len);
+
+  // progress along the route at each step
+  var progress = [0, 0, 0, 0.42, 1, 1];
+  function show(step) {
+    run.dataset.step = step;
+    run.style.setProperty("--p", progress[step]);
+    steps.forEach(function (li, i) {
+      li.classList.toggle("on", i < step || (step === 5 && i === 4));
+      li.classList.toggle("now", i === step - 1 && step < 5);
+    });
+  }
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var timer = null, step = 0;
+  function tick() {
+    step = step >= 5 ? 0 : step + 1;
+    show(step);
+    timer = setTimeout(tick, step === 5 ? 3200 : step === 0 ? 900 : 1800);
+  }
+  function start() {
+    clearTimeout(timer);
+    if (reduce.matches) { show(5); return; }
+    step = 0; show(0);
+    timer = setTimeout(tick, 900);
+  }
+  reduce.addEventListener ? reduce.addEventListener("change", start) : reduce.addListener(start);
+  // only animate while the card is on screen
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) start(); else clearTimeout(timer);
+    }, { threshold: 0.3 }).observe(run);
+  } else { start(); }
+
+  /* ---------- order form ---------- */
+  var form = document.getElementById("orderForm");
+  var bubble = document.getElementById("bubble");
+  var $ = function (id) { return document.getElementById(id); };
+
+  var COPY = {
+    "Buy & bring":   { from: ["Where to buy from", "e.g. Shoprite, Ozone Mall, Yaba"], to: "Deliver to",
+                       details: ["Your shopping list", "e.g. Peak milk 3-pack, 2 loaves of bread. If something isn't available, call me."], budget: true, needsTo: true },
+    "Pick up":       { from: ["Pick up from", "e.g. Mr Clean dry cleaners, Bode Thomas"], to: "Deliver to",
+                       details: ["What are we picking up?", "e.g. 3 shirts, ticket number 4471. Ask for Musa."], budget: false, needsTo: true },
+    "Drop & submit": { from: ["Collect the documents from", "Your address"], to: "Submit at",
+                       details: ["What should we submit, and to whom?", "e.g. Signed form to the front desk, ask for a stamped copy."], budget: false, needsTo: true },
+    "Queue for me":  { from: ["Where's the queue?", "e.g. GTBank, Herbert Macaulay Way"], to: "",
+                       details: ["What are we queueing for?", "e.g. Collect my new ATM card. Wait up to 90 minutes."], budget: false, needsTo: false },
+    "Send a parcel": { from: ["Pick up from", "Sender's address"], to: "Deliver to",
+                       details: ["What are we sending?", "e.g. Small bag of clothes, about 2kg. Handle with care."], budget: false, needsTo: true },
+    "Something else":{ from: ["Where do we start?", "Address and area"], to: "Where does it end?",
+                       details: ["Describe the errand", "Up to three stops. Tell us everything the runner needs to know."], budget: true, needsTo: false }
+  };
+
+  function type() { return form.querySelector('input[name="type"]:checked').value; }
+  function val(id) { return $(id).value.trim(); }
+  function setOpen(id, open) { $(id).classList.toggle("open", open); }
+
+  function applyType() {
+    var c = COPY[type()];
+    $("fromLabel").textContent = c.from[0];
+    $("from").placeholder = c.from[1];
+    $("detailsLabel").textContent = c.details[0];
+    $("details").placeholder = c.details[1];
+    setOpen("toBlock", !!c.to);
+    if (c.to) {
+      $("toLabel").innerHTML = c.to + (c.needsTo ? "" : ' <span class="hint">(optional)</span>');
+    }
+    $("to").required = !!c.needsTo;
+    setOpen("budgetBlock", c.budget);
+    update();
+  }
+
+  function place(addr, landmark) {
+    return addr + (landmark ? " (landmark: " + landmark + ")" : "");
+  }
+
+  function message() {
+    var c = COPY[type()];
+    var lines = ["Hello Errand Runs, I'd like to order an errand.", ""];
+    lines.push("*Errand:* " + type());
+    lines.push("*" + c.from[0].replace(/\?$/, "") + ":* " + (val("from") ? place(val("from"), val("fromLandmark")) : "…"));
+    if (c.to && (c.needsTo || val("to"))) {
+      lines.push("*" + c.to.replace(/\?$/, "") + ":* " + (val("to") ? place(val("to"), val("toLandmark")) : "…"));
+    }
+    lines.push("*Details:* " + (val("details") || "…"));
+    if (c.budget && val("budget")) {
+      var n = Number(val("budget").replace(/[^\d]/g, ""));
+      if (n) lines.push("*Budget for items:* ₦" + n.toLocaleString("en-NG"));
+    }
+    var when = $("when").value;
+    if (when === "Later today" && val("time")) when += ", around " + val("time");
+    lines.push("*When:* " + when);
+    lines.push("*My name:* " + (val("name") || "…"));
+    if ($("someoneElse").checked) {
+      lines.push("*Recipient:* " + (val("rName") || "…") + (val("rPhone") ? ", " + val("rPhone") : ""));
+    }
+    return lines.join("\n");
+  }
+
+  // Render *bold* the way WhatsApp will, without trusting typed text as HTML.
+  function render(text) {
+    bubble.textContent = "";
+    text.split(/(\*[^*\n]+\*)/).forEach(function (part) {
+      if (/^\*[^*\n]+\*$/.test(part)) {
+        var b = document.createElement("b"); b.textContent = part.slice(1, -1); bubble.appendChild(b);
+      } else if (part) {
+        bubble.appendChild(document.createTextNode(part));
+      }
+    });
+  }
+
+  var last = "";
+  function update() {
+    var m = message();
+    if (m === last) return;
+    last = m;
+    render(m);
+  }
+
+  function validate() {
+    var firstBad = null;
+    form.querySelectorAll("[data-field]").forEach(function (wrap) {
+      var input = wrap.querySelector("input, textarea");
+      var hidden = wrap.closest(".reveal") && !wrap.closest(".reveal").classList.contains("open");
+      var needed = input.required || (input.id === "rName" || input.id === "rPhone") && $("someoneElse").checked;
+      var bad = !hidden && needed && !input.value.trim();
+      if (input.id === "rPhone" && !bad && needed) bad = input.value.replace(/\D/g, "").length < 10;
+      wrap.classList.toggle("invalid", bad);
+      if (bad && !firstBad) firstBad = input;
+    });
+    if (firstBad) firstBad.focus();
+    return !firstBad;
+  }
+
+  form.addEventListener("input", function (e) {
+    var wrap = e.target.closest("[data-field]");
+    if (wrap) wrap.classList.remove("invalid");
+    update();
+  });
+  form.addEventListener("change", function (e) {
+    if (e.target.name === "type") applyType();
+    if (e.target.id === "when") setOpen("timeBlock", e.target.value === "Later today");
+    if (e.target.id === "someoneElse") setOpen("recipientBlock", e.target.checked);
+    update();
+  });
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+    var t = type();
+    track("order-sent/" + t.toLowerCase().replace(/[^a-z]+/g, "-"), "Sent order: " + t);
+    window.open(waLink(message()), "_blank", "noopener");
+  });
+
+  applyType();
+
+  /* floating button appears once the hero is out of view */
+  var fab = $("fab");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      fab.classList.toggle("show", !entries[0].isIntersecting);
+    }).observe(document.querySelector(".hero"));
+  } else { fab.classList.add("show"); }
+})();
+</script>
+</body>
+</html>
