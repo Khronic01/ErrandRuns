@@ -1,5 +1,7 @@
 # Errand Runs Lagos
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/08579a53-a17a-40f2-acde-7bbc2a41f79e/deploy-status?branch=main)](https://app.netlify.com/projects/sage-sundae-a2b6d6/deploys)
+
 Errand Runs currently has two web surfaces:
 
 - The live WhatsApp ordering site is a static HTML, CSS and JavaScript site at the repository root. It has no build step.
