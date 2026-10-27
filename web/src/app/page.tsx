@@ -486,8 +486,16 @@ export default function Home() {
             <span className="mark-dot" aria-hidden="true" />
             Errand Runs
           </a>
+          <nav className="nav-links" aria-label="Main navigation">
+            <a href="#services">Services</a>
+            <a href="#how">How it works</a>
+            <a href="#trust-title">Safety</a>
+          </nav>
+          <a className="nav-about" href="#about">
+            About us
+          </a>
           <a className="btn btn-ink" href="#order">
-            Order an errand
+            Get a price
           </a>
         </div>
       </header>
@@ -497,20 +505,23 @@ export default function Home() {
           <div className="wrap hero-grid">
             <div>
               <h1 id="hero-title" className="lettering">
-                Skip the traffic. We&apos;ll run it.
+                Done<span className="hero-period" aria-hidden="true">.</span>
               </h1>
               <p className="lede">
-                Groceries, pickups, queues and parcels across Lagos Mainland. Tell us what needs doing, agree the price on WhatsApp, and a verified runner gets it done while you get on with your day.
+                Tell us what needs doing. A verified runner takes it off your list across Lagos Mainland, and you watch it happen.
               </p>
               <div className="hero-actions">
                 <a className="btn btn-ink" href="#order">
-                  Order an errand
+                  Get a price
                 </a>
-                <a className="btn btn-line wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
+                <a className="btn btn-line" href="#how">
+                  How it works
+                </a>
+                <a className="hero-whatsapp wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="#wa-icon" />
                   </svg>
-                  Chat on WhatsApp
+                  Prefer WhatsApp?
                 </a>
               </div>
               <p className="areas-line">
@@ -524,55 +535,65 @@ export default function Home() {
                 <b>Buy &amp; bring</b>
                 <span>Yaba to Surulere</span>
               </div>
-              <div className="map">
-                <svg viewBox="0 0 360 260" role="presentation">
-                  <g>
-                    <path className="road-edge" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132" />
-                    <path className="road" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132" />
-                  </g>
-                  <rect x="160" y="150" width="70" height="46" rx="6" fill="#dde3e9" />
-                  <rect x="268" y="150" width="70" height="46" rx="6" fill="#dde3e9" />
-                  <rect x="160" y="76" width="70" height="38" rx="6" fill="#dde3e9" />
-                  <rect x="78" y="76" width="46" height="38" rx="6" fill="#d3ead9" />
-                  <rect x="16" y="150" width="108" height="46" rx="6" fill="#dde3e9" />
-                  <path
-                    className="route"
-                    d="M58 214 H142 V132 H246 V58 H300"
-                    style={{
-                      strokeDasharray: 398,
-                      strokeDashoffset: 398 - routeProgress * 398,
-                    }}
-                  />
-                  <g className="pin">
-                    <circle cx="58" cy="214" r="11" fill="#1a1d24" />
-                    <path d="M53 210 h10 l-1.5 8 h-7 z" fill="#ffc72c" />
-                    <text x="58" y="244" textAnchor="middle">
-                      Supermarket
-                    </text>
-                  </g>
-                  <g className="pin">
-                    <circle cx="300" cy="58" r="11" fill="#1a1d24" />
-                    <path d="M294 59 l6 -6 l6 6 v6 h-12 z" fill="#ffc72c" />
-                    <text x="300" y="32" textAnchor="middle">
-                      Your door
-                    </text>
-                  </g>
-                  <g
-                    className="rider"
-                    aria-hidden="true"
-                    style={{
-                      opacity: routeStep >= 2 && routeStep <= 4 ? 1 : 0,
-                      transform: `translate(${riderPosition.x - 58}px, ${riderPosition.y - 214}px)`,
-                    }}
-                  >
-                    <circle r="13" fill="#ffc72c" stroke="#1a1d24" strokeWidth="3" />
-                    <circle r="4" fill="#1a1d24" />
-                  </g>
-                  <g className="done-badge" style={{ opacity: routeStep === 5 ? 1 : 0 }}>
-                    <circle cx="300" cy="58" r="17" fill="#0b7a55" />
-                    <path d="M292 58 l6 6 l11 -12" stroke="#fff" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  </g>
-                </svg>
+              <div className="map-stage">
+                <div className="map">
+                  <svg viewBox="0 0 360 260" role="presentation">
+                    <g>
+                      <path className="road-edge" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132" />
+                      <path className="road" d="M0 214 H360 M142 0 V260 M0 132 H360 M246 0 V260 M0 58 H360 M60 0 V132" />
+                    </g>
+                    <rect x="160" y="150" width="70" height="46" rx="6" fill="#ddebe3" />
+                    <rect x="268" y="150" width="70" height="46" rx="6" fill="#ddebe3" />
+                    <rect x="160" y="76" width="70" height="38" rx="6" fill="#ddebe3" />
+                    <rect x="78" y="76" width="46" height="38" rx="6" fill="#bfe3cf" />
+                    <rect x="16" y="150" width="108" height="46" rx="6" fill="#ddebe3" />
+                    <path
+                      className="route"
+                      d="M58 214 H142 V132 H246 V58 H300"
+                      style={{
+                        strokeDasharray: 398,
+                        strokeDashoffset: 398 - routeProgress * 398,
+                      }}
+                    />
+                    <g className="pin">
+                      <circle cx="58" cy="214" r="11" fill="#0f3d2e" />
+                      <path d="M53 210 h10 l-1.5 8 h-7 z" fill="#ffd23f" />
+                      <text x="58" y="244" textAnchor="middle">
+                        Supermarket
+                      </text>
+                    </g>
+                    <g className="pin">
+                      <circle cx="300" cy="58" r="11" fill="#0f3d2e" />
+                      <path d="M294 59 l6 -6 l6 6 v6 h-12 z" fill="#ffd23f" />
+                      <text x="300" y="32" textAnchor="middle">
+                        Your door
+                      </text>
+                    </g>
+                    <g
+                      className="rider"
+                      aria-hidden="true"
+                      style={{
+                        opacity: routeStep >= 2 && routeStep <= 4 ? 1 : 0,
+                        transform: `translate(${riderPosition.x - 58}px, ${riderPosition.y - 214}px)`,
+                      }}
+                    >
+                      <circle r="13" fill="#ff6b35" stroke="#fff" strokeWidth="3" />
+                      <circle r="4" fill="#0f3d2e" />
+                    </g>
+                    <g className="done-badge" style={{ opacity: routeStep === 5 ? 1 : 0 }}>
+                      <circle cx="300" cy="58" r="17" fill="#0f9d8a" />
+                      <path d="M292 58 l6 6 l11 -12" stroke="#fff" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                    </g>
+                  </svg>
+                </div>
+                <div className="stage-card stage-card-status">
+                  <span className="stage-check" aria-hidden="true">✓</span>
+                  <span><b>Runner verified</b><small>Updates shared on WhatsApp</small></span>
+                </div>
+                <div className="stage-card stage-card-price">
+                  <small>Before the runner sets off</small>
+                  <b>Price agreed</b>
+                </div>
               </div>
               <ol className="steps" id="steps">
                 {["Order sent on WhatsApp", "Price agreed, runner assigned", "Runner at the supermarket", "Bought, receipt photo sent to you", "Delivered to your door"].map((item, index) => (
@@ -593,15 +614,20 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="stripes" aria-hidden="true" />
+        <div className="tape" aria-hidden="true">
+          <div className="tape-track">
+            <span>Pick up <i>✳</i> Buy <i>✳</i> Drop off <i>✳</i> Collect <i>✳</i> Deliver <i>✳</i> Queue <i>✳</i> Submit <i>✳</i></span>
+            <span aria-hidden="true">Pick up <i>✳</i> Buy <i>✳</i> Drop off <i>✳</i> Collect <i>✳</i> Deliver <i>✳</i> Queue <i>✳</i> Submit <i>✳</i></span>
+          </div>
+        </div>
 
-        <section aria-labelledby="what-title">
+        <section id="services" aria-labelledby="what-title">
           <div className="wrap split">
             <div>
               <h2 id="what-title" className="lettering">
-                What a runner can do for you
+                Two ways to get it done
               </h2>
-              <p className="lede">If it&apos;s a small physical task that eats half your day, send it to us. You get photo proof at each step.</p>
+              <p className="lede">Describe the task or hand over the item. One runner owns the job from start to finish.</p>
             </div>
             <ul className="tasks">
               <li>
@@ -644,7 +670,80 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="how" aria-labelledby="how-title">
+        <section className="audience" aria-labelledby="audience-title">
+          <div className="wrap">
+            <div className="section-heading">
+              <p className="eyebrow">A little more room in your day</p>
+              <h2 id="audience-title" className="lettering">Made for people with a lot going on</h2>
+            </div>
+            <div className="audience-grid">
+              <article className="audience-card audience-card-blue">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="14" width="44" height="30" rx="4" /><path d="M4 52h56M24 44v8M40 44v8" /></svg>
+                <div><h3>Remote workers</h3><p>Get a package collected without leaving your desk.</p></div>
+              </article>
+              <article className="audience-card audience-card-yellow">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 22h40l-4 32H16z" /><path d="M22 22c0-10 20-10 20 0" /></svg>
+                <div><h3>Parents</h3><p>Groceries and pickups handled while the house keeps moving.</p></div>
+              </article>
+              <article className="audience-card audience-card-green">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="20" width="48" height="32" rx="5" /><path d="M24 20v-6h16v6M8 34h48" /></svg>
+                <div><h3>Busy professionals</h3><p>Get documents to a client before your next meeting.</p></div>
+              </article>
+              <article className="audience-card audience-card-coral">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 54C10 38 8 22 18 16c6-3 11 0 14 5 3-5 8-8 14-5 10 6 8 22-14 38z" /></svg>
+                <div><h3>Families</h3><p>Help for relatives when you can&apos;t be there in person.</p></div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className="about" id="about" aria-labelledby="about-title">
+          <div className="wrap about-grid">
+            <div className="about-copy">
+              <p className="about-kicker">A little more room in your day</p>
+              <h2 id="about-title" className="lettering">
+                We take the running around off your hands.
+              </h2>
+              <p className="lede">
+                Errand Runs is a Lagos Mainland errands and delivery service for the everyday tasks that pull you away from work, family or rest. From groceries and pickups to queues and parcels, we help get the small but important things done.
+              </p>
+              <p>
+                We keep things simple: tell us what you need, agree on the price before the runner sets off, and follow the errand through WhatsApp.
+              </p>
+              <a className="btn btn-ink about-cta" href="#order">
+                Let&apos;s run your errand
+              </a>
+            </div>
+            <div className="about-card">
+              <h3 className="lettering">Thoughtful errands, every step.</h3>
+              <ul className="about-points">
+                <li>
+                  <span aria-hidden="true">01</span>
+                  <div>
+                    <b>Rooted in Lagos</b>
+                    <p>We focus on the areas we can serve well, and grow carefully from there.</p>
+                  </div>
+                </li>
+                <li>
+                  <span aria-hidden="true">02</span>
+                  <div>
+                    <b>Clear before we go</b>
+                    <p>You know the errand price and can approve it before the runner moves.</p>
+                  </div>
+                </li>
+                <li>
+                  <span aria-hidden="true">03</span>
+                  <div>
+                    <b>Kept in the loop</b>
+                    <p>We share updates and photo proof on WhatsApp as the errand progresses.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="how" id="how" aria-labelledby="how-title">
           <div className="wrap">
             <h2 id="how-title" className="lettering">
               How ordering works
@@ -735,10 +834,13 @@ export default function Home() {
                         aria-busy={busyLocation === "from"}
                         disabled={busyLocation !== null}
                       >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          <circle cx="12" cy="9" r="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                        </svg>
+                        <span className="loc-icon" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="5.25" />
+                            <circle cx="12" cy="12" r="1.5" className="loc-icon-center" />
+                            <path d="M12 2.75v2.5M12 18.75v2.5M2.75 12h2.5M18.75 12h2.5" />
+                          </svg>
+                        </span>
                         <span>{busyLocation === "from" ? "Finding you…" : pins.from ? "Location added. Add a landmark to help the runner." : "Use my current location"}</span>
                       </button>
                     ) : null}
@@ -784,10 +886,13 @@ export default function Home() {
                               aria-busy={busyLocation === "to"}
                               disabled={busyLocation !== null}
                             >
-                              <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                <circle cx="12" cy="9" r="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
-                              </svg>
+                              <span className="loc-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                  <circle cx="12" cy="12" r="5.25" />
+                                  <circle cx="12" cy="12" r="1.5" className="loc-icon-center" />
+                                  <path d="M12 2.75v2.5M12 18.75v2.5M2.75 12h2.5M18.75 12h2.5" />
+                                </svg>
+                              </span>
                               <span>{busyLocation === "to" ? "Finding you…" : pins.to ? "Location added. Add a landmark to help the runner." : "Use my current location"}</span>
                             </button>
                           ) : null}
@@ -1091,6 +1196,7 @@ export default function Home() {
               Errand Runs
             </a>
             <p>Errands and deliveries in Lagos. Open 8am to 8pm, Monday to Saturday.</p>
+            <a className="footer-about" href="#about">About us</a>
           </div>
           <a className="btn btn-ink wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
