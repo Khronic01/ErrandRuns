@@ -494,6 +494,12 @@ export default function Home() {
           <a className="nav-about" href="#about">
             About us
           </a>
+          <Link className="nav-about" href="/sign-in">
+            Sign in
+          </Link>
+          <Link className="nav-about" href="/orders">
+            My orders
+          </Link>
           <a className="btn btn-ink" href="#order">
             Get a price
           </a>

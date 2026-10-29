@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import RunnerWorkspace from "@/components/runner-workspace";
 
 export const metadata: Metadata = { title: "Runner" };
 
@@ -21,6 +23,10 @@ export default function RunnerHome() {
           <li>An in-person onboarding session and a trial job</li>
         </ul>
       </section>
+      <Link className="mt-6 inline-block text-sm font-medium underline underline-offset-4" href="/sign-in?next=%2Frunner">
+        Runner sign in
+      </Link>
+      <RunnerWorkspace />
     </main>
   );
 }

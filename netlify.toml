@@ -1,4 +1,4 @@
-# MVP 1 is a static site: no build step.
+# Netlify's Next.js adapter handles routes, APIs, and server rendering.
 [build]
-  publish = "."
-  command = ""
+  base = "web"
+  command = "npm run build"

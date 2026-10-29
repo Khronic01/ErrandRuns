@@ -32,7 +32,7 @@ The site lets customers describe an errand and open a pre-filled WhatsApp messag
 
 To change the WhatsApp number, edit `WHATSAPP` in `assets/js/site.js` using international format without a leading `+`. All WhatsApp links are generated from that value.
 
-Deploy the repository root to Netlify. `netlify.toml` sets the publish directory to `.` and the build command to empty, so the static site remains available at the same paths.
+The root static site remains in the repository as the original MVP. Netlify now builds the Next.js application from `web/`; its adapter serves the application pages and `/api` route handlers. Configure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in the Netlify site environment and set the deployed URL in the Supabase Auth URL allowlist.
 
 ## Next.js application
 
@@ -56,6 +56,14 @@ npm run build
 
 The app's available routes are `/`, `/runner`, `/ops` and `/track/[token]`. Do not commit `.env.local` or other credentials.
 
+### Web API
+
+The Next.js app exposes JSON endpoints under `/api` for public quote and waitlist requests, customer job creation/listing, tracking, runner operations, and the ops board. The handlers call the existing Supabase order-engine functions; authorization and state transitions remain enforced by the database.
+
+Endpoints: `GET /jobs`, `POST /jobs`, `POST /jobs/quote`, `POST /waitlist`, `GET /tracking/{token}`; `GET /runner/{profile,offers,jobs}`, `POST /runner/online`, `POST /runner/offers/{offerId}`, `POST /runner/jobs/{jobId}/{transition,complete,locations,proof}`; `GET /ops/{alerts,jobs,runners}`, `GET /ops/jobs/{jobId}/suggestions`, `POST /ops/jobs/{jobId}/dispatch`, and `POST /ops/runners/{runnerId}/status`.
+
+Quote, waitlist, and token-based tracking are public. Customer, runner, and ops endpoints require a valid Supabase session, and runner/ops permissions are checked again by the database. Phone OTP sign-in creates the customer profile required by `create_job`; SMS delivery must be enabled in Supabase Auth. The runner and ops pages now read and act through the API. Job quotes require coordinates for each stop. The existing WhatsApp order flow remains available, and payment endpoints are not implemented.
+
 ## Current product scope
 
-The static WhatsApp site is the live MVP. The Next.js app is a separate, evolving platform interface; its presence does not change the static site's deployment. Product decisions and backend capabilities should be documented alongside the implementation that owns them.
+The root static WhatsApp site remains the original MVP source. The Netlify deployment now targets the Next.js app, which contains the customer interface, OTP sign-in, and Supabase-backed APIs. Product decisions and backend capabilities should be documented alongside the implementation that owns them.
