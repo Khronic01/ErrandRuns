@@ -1,8 +1,8 @@
-# Errand Runs Lagos
+# OJAH — Every Market, One Place.
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/08579a53-a17a-40f2-acde-7bbc2a41f79e/deploy-status?branch=main)](https://app.netlify.com/projects/sage-sundae-a2b6d6/deploys)
 
-Errand Runs currently has two web surfaces:
+OJAH currently has two web surfaces:
 
 - The live WhatsApp ordering site is a static HTML, CSS and JavaScript site at the repository root. It has no build step.
 - `web/` is a separate Next.js application for the customer, runner, operations and tracking experiences. It is under active development and has its own dependencies, environment and commands.
@@ -44,7 +44,7 @@ npm install
 npm run dev
 ```
 
-Create `.env.local` from `.env.example` and set the Supabase URL and anon key before using features that need Supabase.
+Create `.env.local` from `.env.example` and set the Supabase URL and anon key before using features that need Supabase. Keep `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=false` until Google OAuth is enabled and configured in Supabase Auth.
 
 Run the app checks from `web/`:
 
@@ -56,7 +56,7 @@ npm run build
 
 The app's available routes include `/`, `/sign-in`, `/onboarding/roles`, `/dashboard`, `/orders`, `/runner`, `/ops` and `/track/[token]`. Do not commit `.env.local` or other credentials.
 
-Role onboarding uses the existing `profiles` table and supports email/password plus Google sign-in. Email confirmation, email/password authentication and the Google provider must be enabled in Supabase Auth. Configure the Google OAuth redirect URI shown by Supabase in Google Cloud, and allowlist the app's `/auth/callback` URL in Supabase Auth redirect URLs. The role and email-auth migrations in `supabase/migrations/` have not been applied; they require the already-provisioned `public.profiles` schema. The email-auth migration makes `profiles.phone` optional while retaining existing phone values. Phone-only accounts must first have an email identity linked and verified in Supabase before they can use the new email sign-in. Runner verification remains governed by `runners.status`, and business-owner selection does not approve or publish a store. Apply database changes only after review and approval.
+Role onboarding uses the existing `profiles` table and supports email/password, with Google sign-in available after provider setup. Email confirmation and email/password authentication must be enabled in Supabase Auth. To enable Google sign-in, configure the Google OAuth client credentials in Supabase Auth, allowlist the app's `/auth/callback` URL in Supabase Auth redirect URLs, and set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` in the web app environment. The prepared role and email-auth migrations require the existing `public.profiles` schema; the email-auth migration makes `profiles.phone` optional while retaining existing phone values. Phone-only accounts must first have an email identity linked and verified in Supabase before they can use email sign-in. Runner verification remains governed by `runners.status`, and business-owner selection does not approve or publish a store.
 
 ### Web API
 
@@ -69,3 +69,5 @@ Quote, waitlist, and token-based tracking are public. Customer, runner, and ops 
 ## Current product scope
 
 The root static WhatsApp site remains the original MVP source. The Netlify deployment now targets the Next.js app, which contains the customer interface, OTP sign-in, and Supabase-backed APIs. Product decisions and backend capabilities should be documented alongside the implementation that owns them.
+
+updates

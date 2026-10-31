@@ -1,4 +1,20 @@
 (function () {
+  function dismissLoader() {
+    var loader = document.getElementById("siteLoader");
+    if (!loader) return;
+    loader.classList.add("is-hidden");
+    setTimeout(function () {
+      loader.remove();
+      document.documentElement.classList.remove("js");
+    }, 300);
+  }
+
+  if (document.readyState === "complete") {
+    dismissLoader();
+  } else {
+    window.addEventListener("load", dismissLoader, { once: true });
+  }
+
   // Orders go to this WhatsApp number (0814 069 4034, Nigeria +234).
   var WHATSAPP = "2348140694034";
 
@@ -16,12 +32,12 @@
   }
 
   document.querySelectorAll(".wa-direct").forEach(function (a) {
-    a.href = waLink("Hello Errand Runs, I'd like to ask about an errand.");
+    a.href = waLink("Hello OJAH, I'd like to ask about an errand.");
     a.addEventListener("click", function () { track("whatsapp-chat", "Tapped Chat on WhatsApp"); });
   });
 
   document.getElementById("runnerApply").href = waLink(
-    "Hello Errand Runs, I'd like to become a runner.\n\n*My name:* \n*Area I live in:* \n*I run on:* bike / foot");
+    "Hello OJAH, I'd like to become a runner.\n\n*My name:* \n*Area I live in:* \n*I run on:* bike / foot");
   document.getElementById("runnerApply").addEventListener("click", function () {
     track("runner-apply", "Tapped Apply on WhatsApp (runner)");
   });
@@ -110,7 +126,7 @@
 
   function message() {
     var c = COPY[type()];
-    var lines = ["Hello Errand Runs, I'd like to order an errand.", ""];
+    var lines = ["Hello OJAH, I'd like to order an errand.", ""];
     lines.push("*Errand:* " + type());
     lines.push("*" + c.from[0].replace(/\?$/, "") + ":* " + (val("from") ? place(val("from"), val("fromLandmark")) : "…"));
     if (c.to && (c.needsTo || val("to"))) {
