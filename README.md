@@ -6,6 +6,7 @@ OJAH currently has two web surfaces:
 
 - The live WhatsApp ordering site is a static HTML, CSS and JavaScript site at the repository root. It has no build step.
 - `web/` is a separate Next.js application for the customer, runner, operations and tracking experiences. It is under active development and has its own dependencies, environment and commands.
+- `ErrandRuns/` contains the original application foundation, Supabase schema and database tests. It is now tracked as a regular directory in this repository, not as a separate Git checkout or submodule. Netlify continues to deploy the outer `web/` app.
 
 ## Repository layout
 
@@ -19,6 +20,9 @@ OJAH currently has two web surfaces:
 │   └── share.png
 ├── index.html             # Static site entry point
 ├── netlify.toml           # Publishes the repository root without a build
+├── ErrandRuns/
+│   ├── supabase/          # Original schema, order engine, policies and tests
+│   └── web/               # Original application foundation
 └── web/
     ├── public/            # Next.js static assets
     └── src/               # App Router pages, components and libraries
