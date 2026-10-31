@@ -44,7 +44,7 @@ export default function AccountDashboard() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-8">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
-        <Link href="/" className="text-lg font-bold text-brand">Errand Runs</Link>
+        <Link href="/" className="text-lg font-bold text-brand">OJAH</Link>
         <nav aria-label="Account navigation" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium">
           <Link className="underline-offset-4 hover:underline" href="/">Home</Link>
           <Link className="underline-offset-4 hover:underline" href="/#order">Errands</Link>
@@ -74,7 +74,7 @@ export default function AccountDashboard() {
         )}
         {!loading && !error && roles.length === 0 && (
           <div className="mt-6 rounded-xl border border-line p-5">
-            <p className="text-sm">Choose how you would like to use Errand Runs to finish setting up your account.</p>
+            <p className="text-sm">Choose how you would like to use OJAH to finish setting up your account.</p>
             <Link className="mt-3 inline-block font-semibold text-brand underline" href="/onboarding/roles?next=%2Fdashboard">
               Choose account roles
             </Link>

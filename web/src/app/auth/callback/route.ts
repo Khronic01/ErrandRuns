@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ensureAccountProfile } from "@/lib/account-profile";
+import { accountSetupError } from "@/lib/account-setup";
 import { supabaseServer } from "@/lib/supabase/server";
 
 function safeNextPath(request: Request, requested: string | null) {
@@ -38,6 +39,9 @@ export async function GET(request: Request) {
   const { error: profileError } = await ensureAccountProfile(client, user);
   if (profileError) {
     console.error("Could not save profile after auth callback", profileError);
+    if (accountSetupError("profile", profileError)) {
+      return redirectTo(request, "/sign-in?error=profile_setup");
+    }
     return redirectTo(request, "/sign-in?error=profile");
   }
 
@@ -47,6 +51,9 @@ export async function GET(request: Request) {
     .eq("user_id", user.id);
   if (rolesError) {
     console.error("Could not load roles after OAuth callback", rolesError);
+    if (accountSetupError("roles", rolesError)) {
+      return redirectTo(request, "/sign-in?error=roles_setup");
+    }
     return redirectTo(request, "/sign-in?error=roles");
   }
 

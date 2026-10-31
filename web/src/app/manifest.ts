@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 // Installable web app (PRD: no app-store wait, works on low-end Android).
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Errand Runs",
-    short_name: "Errand Runs",
-    description: "Errands and local delivery in Lagos, done by verified runners.",
+    name: "OJAH — Every Market, One Place.",
+    short_name: "OJAH",
+    description: "Discover local markets, businesses and everyday services in Lagos.",
     start_url: "/",
     display: "standalone",
     background_color: "#f7f6f2",

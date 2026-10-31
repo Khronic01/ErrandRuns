@@ -1,5 +1,6 @@
 import { supabasePublic, supabaseServer } from "@/lib/supabase/server";
 import { ensureAccountProfile } from "@/lib/account-profile";
+import { accountSetupError } from "@/lib/account-setup";
 import { parseAccountRoles } from "@/lib/roles";
 
 type JsonObject = Record<string, unknown>;
@@ -142,7 +143,11 @@ export async function GET(_request: Request, context: RouteContext) {
       .select("role")
       .eq("user_id", auth.user.id)
       .order("created_at", { ascending: true });
-    if (error) return rpcResponse(null, error);
+    if (error) {
+      const setupError = accountSetupError("roles", error);
+      if (setupError) return Response.json({ error: setupError }, { status: 503 });
+      return rpcResponse(null, error);
+    }
     return Response.json(
       { data: data.map(({ role }) => role) },
       { headers: { "Cache-Control": "no-store" } },
@@ -281,7 +286,14 @@ export async function POST(request: Request, context: RouteContext) {
     const auth = await signedInClient();
     if ("response" in auth) return auth.response;
     const { data, error } = await ensureAccountProfile(auth.client, auth.user);
-    if (error) return rpcResponse(null, error);
+    if (error) {
+      const setupError = accountSetupError("profile", error);
+      if (setupError) {
+        console.error("Email authentication requires the profile phone migration", error);
+        return Response.json({ error: setupError }, { status: 503 });
+      }
+      return rpcResponse(null, error);
+    }
     return Response.json({ data }, { status: 201, headers: { "Cache-Control": "no-store" } });
   }
 
@@ -295,14 +307,22 @@ export async function POST(request: Request, context: RouteContext) {
       roles.map((role) => ({ user_id: auth.user.id, role })),
       { onConflict: "user_id,role", ignoreDuplicates: true },
     );
-    if (error) return rpcResponse(null, error);
+    if (error) {
+      const setupError = accountSetupError("roles", error);
+      if (setupError) return Response.json({ error: setupError }, { status: 503 });
+      return rpcResponse(null, error);
+    }
 
     const { data, error: rolesError } = await auth.client
       .from("user_roles")
       .select("role")
       .eq("user_id", auth.user.id)
       .order("created_at", { ascending: true });
-    if (rolesError) return rpcResponse(null, rolesError);
+    if (rolesError) {
+      const setupError = accountSetupError("roles", rolesError);
+      if (setupError) return Response.json({ error: setupError }, { status: 503 });
+      return rpcResponse(null, rolesError);
+    }
     return Response.json(
       { data: data.map(({ role }) => role) },
       { status: 201, headers: { "Cache-Control": "no-store" } },

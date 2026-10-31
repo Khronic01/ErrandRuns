@@ -18,7 +18,7 @@ const PANELS = [
 export default function OpsHome() {
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8">
-      <p className="text-sm font-semibold text-brand">Errand Runs · Ops</p>
+      <p className="text-sm font-semibold text-brand">OJAH · Ops</p>
       <h1 className="mt-2 text-2xl font-semibold">Control room</h1>
       <Link className="mt-2 inline-block text-sm underline underline-offset-4" href="/sign-in?next=%2Fops">
         Staff sign in

@@ -21,7 +21,7 @@ const time = new Intl.DateTimeFormat("en-NG", { hour: "numeric", minute: "2-digi
 export default function TrackPage({ params }: PageProps<"/track/[token]">) {
   return (
     <main className="mx-auto w-full max-w-md px-4 py-8">
-      <p className="text-sm font-semibold text-brand">Errand Runs</p>
+      <p className="text-sm font-semibold text-brand">OJAH · Every Market, One Place.</p>
       <Suspense fallback={<p className="mt-6 text-muted">Loading your delivery…</p>}>
         <TrackingCard params={params} />
       </Suspense>

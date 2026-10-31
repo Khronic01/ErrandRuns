@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Runner" };
 export default function RunnerHome() {
   return (
     <main className="mx-auto w-full max-w-md px-4 py-8">
-      <p className="text-sm font-semibold text-brand">Errand Runs · Runners</p>
+      <p className="text-sm font-semibold text-brand">OJAH · Runners</p>
       <h1 className="mt-4 text-2xl font-semibold">Steady, fair pay. No chasing jobs.</h1>
       <p className="mt-2 text-muted">
         See what you earn before you accept every job. Earnings are paid weekly by bank transfer, and you keep 100% of tips.

@@ -43,6 +43,9 @@ function messageFor(error: unknown) {
   if (code === "AUTH_REQUIRED") return "Sign in with your email to choose account roles.";
   if (code === "SUPABASE_NOT_CONFIGURED") return "Account services are not configured yet.";
   if (code === "FORBIDDEN") return "This account cannot change roles.";
+  if (code === "ACCOUNT_ROLES_MIGRATION_REQUIRED") {
+    return "Account onboarding needs the OJAH roles database migration before you can continue. Please contact the OJAH team.";
+  }
   return "We couldn't save your account roles. Please try again.";
 }
 
@@ -110,10 +113,10 @@ export default function RoleSelection() {
 
   return (
     <main className="mx-auto w-full max-w-2xl px-4 py-10">
-      <Link href="/" className="text-sm font-semibold text-brand">Errand Runs</Link>
+      <Link href="/" className="text-sm font-semibold text-brand">OJAH</Link>
       <section className="mt-6 rounded-2xl border border-line bg-surface p-6 sm:p-8">
         <p className="text-sm font-semibold text-muted">One account, more ways to take part</p>
-        <h1 className="mt-2 text-3xl font-semibold">How would you like to use Errand Runs?</h1>
+        <h1 className="mt-2 text-3xl font-semibold">How would you like to use OJAH?</h1>
         <p className="mt-3 text-sm text-muted">
           Select one or more account types. You can add another role later without creating a second account.
         </p>
@@ -129,7 +132,7 @@ export default function RoleSelection() {
           </div>
         ) : loadError ? (
           <p className="mt-6 rounded-xl bg-warn-soft p-4 text-sm" role="alert">
-            We couldn&apos;t load your account roles. Please refresh the page and try again.
+            {messageFor(new Error(loadError))}
           </p>
         ) : (
           <form className="mt-6 space-y-3" onSubmit={submit}>

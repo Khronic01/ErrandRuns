@@ -63,7 +63,7 @@ export default function CustomerOrders() {
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-10">
-      <Link href="/" className="text-sm font-semibold text-brand">Errand Runs</Link>
+      <Link href="/" className="text-sm font-semibold text-brand">OJAH</Link>
       <h1 className="mt-5 text-2xl font-semibold">Your orders</h1>
       {error && (
         <div className="mt-4 rounded-xl bg-warn-soft p-4 text-sm" role="alert">

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { trackGoatCounterEvent } from "@/lib/analytics";
 
@@ -121,7 +122,7 @@ function createOrderRef() {
   }).formatToParts(new Date());
   const day = parts.find((part) => part.type === "day")?.value ?? "01";
   const month = parts.find((part) => part.type === "month")?.value ?? "01";
-  return `ER-${day}${month}-${Math.floor(1000 + Math.random() * 9000)}`;
+  return `OJ-${day}${month}-${Math.floor(1000 + Math.random() * 9000)}`;
 }
 
 function mapPinUrl(pin: MapPin) {
@@ -171,7 +172,7 @@ function buildWhatsAppText({
   pins: Record<LocationField, MapPin | null>;
 }) {
   const copy = ORDER_COPY[type];
-  const lines = ["Hello Errand Runs, I'd like to order an errand.", "", `*Order:* ${orderRef}`];
+  const lines = ["Hello OJAH, I'd like to order an errand.", "", `*Order:* ${orderRef}`];
   lines.push(`*Errand:* ${type}`);
   lines.push(`*${copy.from[0].replace(/\?$/, "")}:* ${form.from || "…"}${form.fromLandmark ? ` (landmark: ${form.fromLandmark})` : ""}`);
   if (pins.from) lines.push(`Map pin: ${mapPinUrl(pins.from)}`);
@@ -482,9 +483,8 @@ export default function Home() {
     <div>
       <header className="top">
         <div className="wrap nav">
-          <a className="mark" href="#top" aria-label="Errand Runs home">
-            <span className="mark-dot" aria-hidden="true" />
-            Errand Runs
+          <a className="mark" href="#top" aria-label="OJAH — Every Market, One Place.">
+            <Image alt="" className="brand-logo" height={56} priority src="/ojah-logo.png" style={{ width: "min(168px, 37vw)", height: "auto" }} width={168} />
           </a>
           <nav className="nav-links" aria-label="Main navigation">
             <a href="#services">Services</a>
@@ -523,7 +523,7 @@ export default function Home() {
                 <a className="btn btn-line" href="#how">
                   How it works
                 </a>
-                <a className="hero-whatsapp wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
+                <a className="hero-whatsapp wa-direct" href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <use href="#wa-icon" />
                   </svg>
@@ -711,7 +711,7 @@ export default function Home() {
                 We take the running around off your hands.
               </h2>
               <p className="lede">
-                Errand Runs is a Lagos Mainland errands and delivery service for the everyday tasks that pull you away from work, family or rest. From groceries and pickups to queues and parcels, we help get the small but important things done.
+                OJAH brings Lagos Mainland markets, local businesses and everyday services together in one place. Browse what local sellers offer, or get help with the errands and deliveries that pull you away from work, family or rest.
               </p>
               <p>
                 We keep things simple: tell us what you need, agree on the price before the runner sets off, and follow the errand through WhatsApp.
@@ -1067,10 +1067,10 @@ export default function Home() {
                 <div className="chat">
                   <div className="chat-top">
                     <div className="av" aria-hidden="true">
-                      ER
+                      OJ
                     </div>
                     <div>
-                      <b>Errand Runs</b>
+                      <b>OJAH</b>
                       <span>0814 069 4034</span>
                     </div>
                   </div>
@@ -1130,7 +1130,7 @@ export default function Home() {
                 <li>Ikeja GRA</li>
               </ul>
               <p>
-                Outside these areas? <a className="wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20if%20you%20cover%20my%20area." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>Message us on WhatsApp</a> and we&apos;ll tell you when we reach you.
+                Outside these areas? <a className="wa-direct" href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20ask%20if%20you%20cover%20my%20area." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>Message us on WhatsApp</a> and we&apos;ll tell you when we reach you.
               </p>
               <div className="nogo">
                 <b>What we won&apos;t carry</b>
@@ -1147,7 +1147,7 @@ export default function Home() {
                 Questions people ask
               </h2>
               <p className="lede">
-                Anything else, <a className="wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>ask us on WhatsApp</a>.
+                Anything else, <a className="wa-direct" href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>ask us on WhatsApp</a>.
               </p>
             </div>
             <div className="faq">
@@ -1178,7 +1178,7 @@ export default function Home() {
               </ul>
               <a
                 className="btn btn-danfo"
-                href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20become%20a%20runner.%0A%0A*My%20name:*%20%0A*Area%20I%20live%20in:*%20%0A*I%20run%20on:*%20bike%20/%20foot"
+                href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20become%20a%20runner.%0A%0A*My%20name:*%20%0A*Area%20I%20live%20in:*%20%0A*I%20run%20on:*%20bike%20/%20foot"
                 target="_blank"
                 rel="noreferrer noopener"
                 onClick={() => trackGoatCounterEvent("runner-apply", "Tapped Apply on WhatsApp (runner)")}
@@ -1197,14 +1197,13 @@ export default function Home() {
       <footer>
         <div className="wrap foot">
           <div>
-            <a className="mark" href="#top">
-              <span className="mark-dot" aria-hidden="true" />
-              Errand Runs
+            <a className="mark" href="#top" aria-label="OJAH — Every Market, One Place.">
+              <Image alt="" className="brand-logo" height={56} loading="lazy" src="/ojah-logo.png" style={{ width: "min(168px, 37vw)", height: "auto" }} width={168} />
             </a>
             <p>Errands and deliveries in Lagos. Open 8am to 8pm, Monday to Saturday.</p>
             <a className="footer-about" href="#about">About us</a>
           </div>
-          <a className="btn btn-ink wa-direct" href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
+          <a className="btn btn-ink wa-direct" href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" onClick={trackWhatsappChat}>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <use href="#wa-icon" />
             </svg>
@@ -1246,7 +1245,7 @@ export default function Home() {
         </div>
       </dialog>
 
-      <a className={`fab wa-direct ${fabVisible ? "show" : ""}`} href="https://wa.me/2348140694034?text=Hello%20Errand%20Runs%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" aria-label="Chat with Errand Runs on WhatsApp" onClick={trackWhatsappChat}>
+      <a className={`fab wa-direct ${fabVisible ? "show" : ""}`} href="https://wa.me/2348140694034?text=Hello%20OJAH%2C%20I%27d%20like%20to%20ask%20about%20an%20errand." target="_blank" rel="noreferrer noopener" aria-label="Chat with OJAH on WhatsApp" onClick={trackWhatsappChat}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <use href="#wa-icon" />
         </svg>
