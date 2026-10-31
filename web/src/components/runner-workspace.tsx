@@ -11,7 +11,7 @@ type Job = { id: string; ref: string; task_type: string; status: string };
 
 function messageFor(error: unknown) {
   const code = error instanceof Error ? error.message : "REQUEST_FAILED";
-  if (code === "AUTH_REQUIRED") return "Sign in with the phone number on your runner account.";
+  if (code === "AUTH_REQUIRED") return "Sign in with the email address on your runner account.";
   if (code === "FORBIDDEN" || code === "NOT_A_RUNNER") return "This account doesn't have runner access.";
   if (code === "RUNNER_PROFILE_NOT_FOUND") return "Your runner profile has not been set up yet.";
   if (code === "SUPABASE_NOT_CONFIGURED") return "Order services are not configured yet.";

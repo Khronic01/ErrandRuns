@@ -54,15 +54,17 @@ npm run lint
 npm run build
 ```
 
-The app's available routes are `/`, `/runner`, `/ops` and `/track/[token]`. Do not commit `.env.local` or other credentials.
+The app's available routes include `/`, `/sign-in`, `/onboarding/roles`, `/dashboard`, `/orders`, `/runner`, `/ops` and `/track/[token]`. Do not commit `.env.local` or other credentials.
+
+Role onboarding uses the existing `profiles` table and supports email/password plus Google sign-in. Email confirmation, email/password authentication and the Google provider must be enabled in Supabase Auth. Configure the Google OAuth redirect URI shown by Supabase in Google Cloud, and allowlist the app's `/auth/callback` URL in Supabase Auth redirect URLs. The role and email-auth migrations in `supabase/migrations/` have not been applied; they require the already-provisioned `public.profiles` schema. The email-auth migration makes `profiles.phone` optional while retaining existing phone values. Phone-only accounts must first have an email identity linked and verified in Supabase before they can use the new email sign-in. Runner verification remains governed by `runners.status`, and business-owner selection does not approve or publish a store. Apply database changes only after review and approval.
 
 ### Web API
 
-The Next.js app exposes JSON endpoints under `/api` for public quote and waitlist requests, customer job creation/listing, tracking, runner operations, and the ops board. The handlers call the existing Supabase order-engine functions; authorization and state transitions remain enforced by the database.
+The Next.js app exposes JSON endpoints under `/api` for authentication profile sync, role selection, public quote and waitlist requests, customer job creation/listing, tracking, runner operations, and the ops board. The handlers use the authenticated Supabase session; authorization and state transitions remain enforced by the database. `/auth/callback` exchanges verified email/Google OAuth codes for the server-side session and provisions the existing profile.
 
-Endpoints: `GET /jobs`, `POST /jobs`, `POST /jobs/quote`, `POST /waitlist`, `GET /tracking/{token}`; `GET /runner/{profile,offers,jobs}`, `POST /runner/online`, `POST /runner/offers/{offerId}`, `POST /runner/jobs/{jobId}/{transition,complete,locations,proof}`; `GET /ops/{alerts,jobs,runners}`, `GET /ops/jobs/{jobId}/suggestions`, `POST /ops/jobs/{jobId}/dispatch`, and `POST /ops/runners/{runnerId}/status`.
+Endpoints: `POST /account/profile`, `GET /account/roles`, `POST /account/roles`; `GET /jobs`, `POST /jobs`, `POST /jobs/quote`, `POST /waitlist`, `GET /tracking/{token}`; `GET /runner/{profile,offers,jobs}`, `POST /runner/online`, `POST /runner/offers/{offerId}`, `POST /runner/jobs/{jobId}/{transition,complete,locations,proof}`; `GET /ops/{alerts,jobs,runners}`, `GET /ops/jobs/{jobId}/suggestions`, `POST /ops/jobs/{jobId}/dispatch`, and `POST /ops/runners/{runnerId}/status`.
 
-Quote, waitlist, and token-based tracking are public. Customer, runner, and ops endpoints require a valid Supabase session, and runner/ops permissions are checked again by the database. Phone OTP sign-in creates the customer profile required by `create_job`; SMS delivery must be enabled in Supabase Auth. The runner and ops pages now read and act through the API. Job quotes require coordinates for each stop. The existing WhatsApp order flow remains available, and payment endpoints are not implemented.
+Quote, waitlist, and token-based tracking are public. Customer, runner, and ops endpoints require a valid Supabase session, and runner/ops permissions are checked again by the database. Email sign-in creates the customer profile required by `create_job`; the migration that makes profile phone optional must be applied before email-only accounts can complete profile creation. The runner and ops pages now read and act through the API. Job quotes require coordinates for each stop. The existing WhatsApp order flow remains available, and payment endpoints are not implemented.
 
 ## Current product scope
 

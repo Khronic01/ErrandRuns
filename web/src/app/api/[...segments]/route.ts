@@ -1,4 +1,6 @@
 import { supabasePublic, supabaseServer } from "@/lib/supabase/server";
+import { ensureAccountProfile } from "@/lib/account-profile";
+import { parseAccountRoles } from "@/lib/roles";
 
 type JsonObject = Record<string, unknown>;
 type RouteContext = { params: Promise<{ segments: string[] }> };
@@ -85,6 +87,9 @@ function rpcResponse(data: unknown, error: RpcError | null, successStatus = 200)
     if (CONFLICT_ERRORS.has(code)) return Response.json({ error: code }, { status: 409 });
     return Response.json({ error: code }, { status: 400 });
   }
+  if (error.code === "AUTH_EMAIL_REQUIRED") {
+    return Response.json({ error: error.code }, { status: 400 });
+  }
   if (error.code === "42501") return Response.json({ error: "FORBIDDEN" }, { status: 403 });
   if (error.code === "23505") return Response.json({ error: "CONFLICT" }, { status: 409 });
   if (error.code.startsWith("22") || error.code === "23514") {
@@ -100,7 +105,14 @@ async function signedInClient() {
   if (configurationError) return { response: configurationError } as const;
   const client = await supabaseServer();
   const { data, error } = await client.auth.getUser();
-  if (error || !data.user) {
+  if (error && (error.status === 401 || error.status === 403)) {
+    return { response: Response.json({ error: "AUTH_REQUIRED" }, { status: 401 }) } as const;
+  }
+  if (error) {
+    console.error("Supabase authentication verification failed", { message: error.message, status: error.status });
+    return { response: Response.json({ error: "AUTH_VERIFICATION_FAILED" }, { status: 503 }) } as const;
+  }
+  if (!data.user) {
     return { response: Response.json({ error: "AUTH_REQUIRED" }, { status: 401 }) } as const;
   }
   return { client, user: data.user } as const;
@@ -121,6 +133,21 @@ function validCoordinates(point: JsonObject) {
 
 export async function GET(_request: Request, context: RouteContext) {
   const { segments } = await context.params;
+
+  if (segments.length === 2 && segments[0] === "account" && segments[1] === "roles") {
+    const auth = await signedInClient();
+    if ("response" in auth) return auth.response;
+    const { data, error } = await auth.client
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", auth.user.id)
+      .order("created_at", { ascending: true });
+    if (error) return rpcResponse(null, error);
+    return Response.json(
+      { data: data.map(({ role }) => role) },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  }
 
   if (segments.length === 1 && segments[0] === "jobs") {
     const auth = await signedInClient();
@@ -249,6 +276,38 @@ export async function POST(request: Request, context: RouteContext) {
   const { segments } = await context.params;
   const payload = await readBody(request);
   if (payload instanceof Response) return payload;
+
+  if (segments.length === 2 && segments[0] === "account" && segments[1] === "profile") {
+    const auth = await signedInClient();
+    if ("response" in auth) return auth.response;
+    const { data, error } = await ensureAccountProfile(auth.client, auth.user);
+    if (error) return rpcResponse(null, error);
+    return Response.json({ data }, { status: 201, headers: { "Cache-Control": "no-store" } });
+  }
+
+  if (segments.length === 2 && segments[0] === "account" && segments[1] === "roles") {
+    const roles = parseAccountRoles(payload.roles);
+    if (!roles) return badRequest("Choose one or more supported account roles.");
+    const auth = await signedInClient();
+    if ("response" in auth) return auth.response;
+
+    const { error } = await auth.client.from("user_roles").upsert(
+      roles.map((role) => ({ user_id: auth.user.id, role })),
+      { onConflict: "user_id,role", ignoreDuplicates: true },
+    );
+    if (error) return rpcResponse(null, error);
+
+    const { data, error: rolesError } = await auth.client
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", auth.user.id)
+      .order("created_at", { ascending: true });
+    if (rolesError) return rpcResponse(null, rolesError);
+    return Response.json(
+      { data: data.map(({ role }) => role) },
+      { status: 201, headers: { "Cache-Control": "no-store" } },
+    );
+  }
 
   if (segments.length === 2 && segments[0] === "jobs" && segments[1] === "quote") {
     if (!validJobInput(payload)) return badRequest("Provide a supported task type and 1–3 stops with addresses and map coordinates.");

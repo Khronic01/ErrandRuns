@@ -1,66 +1,78 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { apiRequest } from "@/lib/api-client";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 
-const INTERNATIONAL_PHONE = /^\+[1-9]\d{7,14}$/;
-const OTP = /^\d{4,8}$/;
 type AuthMode = "sign-in" | "sign-up";
+
+const AUTH_ERROR_MESSAGES: Record<string, string> = {
+  oauth: "Google sign-in could not be completed. Please try again.",
+  profile: "Your account was verified, but your profile could not be saved. Please sign in again.",
+  roles: "Your account was verified, but account roles could not be loaded. Please try again.",
+};
 
 function returnPath() {
   const requested = new URLSearchParams(window.location.search).get("next");
-  if (!requested) return "/";
+  if (!requested) return "/dashboard";
   const destination = new URL(requested, window.location.origin);
   return destination.origin === window.location.origin
     ? `${destination.pathname}${destination.search}${destination.hash}`
-    : "/";
+    : "/dashboard";
 }
 
 export default function SignInForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorCode = searchParams.get("error") ?? "";
+  const initialError = AUTH_ERROR_MESSAGES[errorCode] ?? "";
   const [mode, setMode] = useState<AuthMode>("sign-in");
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
-  const [stage, setStage] = useState<"phone" | "code">("phone");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function sendCode(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const normalizedPhone = phone.trim();
-    if (!INTERNATIONAL_PHONE.test(normalizedPhone)) {
-      setError("Enter your phone in international format, for example +2348012345678.");
+  async function finishSignIn(userId: string, isNewAccount: boolean) {
+    const client = supabaseBrowser();
+    const { data: userData, error: userError } = await client.auth.getUser();
+    if (userError || !userData.user?.email || userData.user.id !== userId) {
+      setError("Your sign-in succeeded, but your account details could not be confirmed. Please sign in again.");
       return;
     }
 
-    setBusy(true);
-    setError("");
-    setMessage("");
     try {
-      const { error: requestError } = await supabaseBrowser().auth.signInWithOtp({
-        phone: normalizedPhone,
-        options: { shouldCreateUser: mode === "sign-up" },
-      });
-      if (requestError) {
-        setError(requestError.message);
-        return;
-      }
-      setPhone(normalizedPhone);
-      setStage("code");
-      setMessage(`We sent a verification code to ${normalizedPhone}.`);
-    } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "We couldn't send a code. Please try again.");
-    } finally {
-      setBusy(false);
+      await apiRequest("/api/account/profile", { method: "POST", body: "{}" });
+    } catch (profileError) {
+      console.error("Could not save the authenticated user's profile", profileError);
+      setError("Your sign-in succeeded, but your profile could not be saved. Please try again.");
+      return;
     }
+
+    let roles: string[];
+    try {
+      roles = await apiRequest<string[]>("/api/account/roles");
+    } catch (rolesError) {
+      console.error("Could not load account roles after sign-in", rolesError);
+      setError("Your sign-in succeeded, but account roles could not be loaded. Please try again later.");
+      return;
+    }
+
+    const destination = returnPath();
+    if (isNewAccount || roles.length === 0) {
+      router.replace(`/onboarding/roles?next=${encodeURIComponent(destination)}`);
+      return;
+    }
+    router.replace(destination);
   }
 
-  async function verifyCode(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const normalizedCode = code.trim();
-    if (!OTP.test(normalizedCode)) {
-      setError("Enter the verification code from your SMS.");
+    const normalizedEmail = email.trim().toLowerCase();
+    if (mode === "sign-up" && password.length < 8) {
+      setError("Use a password with at least 8 characters.");
       return;
     }
 
@@ -69,127 +81,198 @@ export default function SignInForm() {
     setMessage("");
     try {
       const client = supabaseBrowser();
-      const { data, error: verifyError } = await client.auth.verifyOtp({
-        phone,
-        token: normalizedCode,
-        type: "sms",
+      if (mode === "sign-up") {
+        const { data, error: signUpError } = await client.auth.signUp({
+          email: normalizedEmail,
+          password,
+          options: {
+            emailRedirectTo: new URL(
+              `/auth/callback?next=${encodeURIComponent(returnPath())}`,
+              window.location.origin,
+            ).toString(),
+          },
+        });
+        if (signUpError) {
+          setError(signUpError.message);
+          return;
+        }
+        if (!data.user) {
+          setError("We couldn't create your account. Please try again.");
+          return;
+        }
+        if (!data.session) {
+          setMessage("Check your email for a confirmation link. Confirm your address to finish creating your account.");
+          return;
+        }
+        await finishSignIn(data.user.id, true);
+        return;
+      }
+
+      const { data, error: signInError } = await client.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
       });
-      if (verifyError) {
-        setError(verifyError.message);
+      if (signInError) {
+        setError(signInError.message);
         return;
       }
-      if (!data.user?.phone) {
-        setError("We couldn't confirm the verified phone number. Request a new code and try again.");
+      if (!data.user) {
+        setError("We couldn't sign you in. Please check your details and try again.");
         return;
       }
+      await finishSignIn(data.user.id, false);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "We couldn't complete sign-in. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
-      const { error: profileError } = await client.from("profiles").upsert(
-        { id: data.user.id, phone: data.user.phone },
-        { onConflict: "id" },
-      );
-      if (profileError) {
-        const { error: signOutError } = await client.auth.signOut();
-        if (signOutError) console.error("Could not clear the incomplete Supabase session", signOutError);
-        setError("Your number was verified, but your profile could not be saved. Please try signing in again.");
-        return;
-      }
-
-      window.location.assign(returnPath());
-    } catch (verifyError) {
-      setError(verifyError instanceof Error ? verifyError.message : "We couldn't verify that code. Please try again.");
+  async function signInWithGoogle() {
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const callback = new URL("/auth/callback", window.location.origin);
+      callback.searchParams.set("next", returnPath());
+      const { error: oauthError } = await supabaseBrowser().auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: callback.toString() },
+      });
+      if (oauthError) setError(oauthError.message);
+    } catch (oauthError) {
+      setError(oauthError instanceof Error ? oauthError.message : "Google sign-in couldn't be started. Please try again.");
     } finally {
       setBusy(false);
     }
   }
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 py-10">
-      <Link href="/" className="text-sm font-semibold text-brand">Errand Runs</Link>
-      <section className="mt-6 rounded-2xl border border-line bg-surface p-6">
-        <h1 className="text-2xl font-semibold">
-          {mode === "sign-up" ? "Create your account" : "Sign in"}
-        </h1>
-        <p className="mt-2 text-sm text-muted">
-          {mode === "sign-up"
-            ? "Create an Errand Runs account with your phone number. We'll text you a one-time verification code."
-            : "Enter the phone number linked to your account and we'll text you a one-time verification code."}
-        </p>
+    <main className="auth-page">
+      <div className="auth-wrap">
+        <header className="auth-header">
+          <Link className="auth-mark" href="/" aria-label="Errand Runs home">
+            <span className="mark-dot" aria-hidden="true" />
+            Errand Runs
+          </Link>
+          <Link className="auth-home-link" href="/">Back to home</Link>
+        </header>
 
-        {stage === "phone" ? (
-          <>
-            <div className="mt-6 grid grid-cols-2 rounded-xl bg-brand-soft p-1" aria-label="Account action" role="group">
+        <div className="auth-content">
+          <aside className="auth-story" aria-label="About Errand Runs">
+            <p className="auth-kicker"><span aria-hidden="true" /> Made for everyday life in Lagos</p>
+            <h2>One less thing to worry about.</h2>
+            <p className="auth-story-copy">
+              Get the little things done with Errand Runs. Sign in to manage your account and keep your errands moving.
+            </p>
+            <div className="auth-promise" aria-label="Errand Runs service benefits">
+              <p><span aria-hidden="true">✓</span> Simple, dependable errand support</p>
+              <p><span aria-hidden="true">✓</span> Updates as your request moves</p>
+              <p><span aria-hidden="true">✓</span> One account for your Errand Runs experience</p>
+            </div>
+            <div className="auth-stamp" aria-hidden="true">
+              <span>LOCAL</span>
+              <strong>MADE<br />FOR LAGOS</strong>
+              <span>ERRAND RUNS · LAGOS</span>
+            </div>
+          </aside>
+
+          <section className="auth-card" aria-labelledby="auth-title">
+            <div className="auth-card-heading">
+              <p className="auth-card-eyebrow">{mode === "sign-up" ? "Get started" : "Welcome back"}</p>
+              <h1 id="auth-title">{mode === "sign-up" ? "Create your account" : "Sign in to Errand Runs"}</h1>
+              <p>
+                {mode === "sign-up"
+                  ? "Use your email, or continue securely with Google."
+                  : "Your errands are just a sign-in away."}
+              </p>
+            </div>
+
+            <div className="auth-tabs" aria-label="Account action" role="group">
               <button
                 aria-pressed={mode === "sign-in"}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold ${mode === "sign-in" ? "bg-white text-brand shadow-sm" : "text-muted"}`}
-                onClick={() => setMode("sign-in")}
+                className={mode === "sign-in" ? "is-active" : ""}
+                disabled={busy}
+                onClick={() => { setMode("sign-in"); setError(""); setMessage(""); }}
                 type="button"
               >
                 Sign in
               </button>
               <button
                 aria-pressed={mode === "sign-up"}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold ${mode === "sign-up" ? "bg-white text-brand shadow-sm" : "text-muted"}`}
-                onClick={() => setMode("sign-up")}
+                className={mode === "sign-up" ? "is-active" : ""}
+                disabled={busy}
+                onClick={() => { setMode("sign-up"); setError(""); setMessage(""); }}
                 type="button"
               >
                 Create account
               </button>
             </div>
-            <form className="mt-5 space-y-4" onSubmit={sendCode}>
-              <label className="block text-sm font-medium" htmlFor="phone">Phone number</label>
-              <input
-                autoComplete="tel"
-                className="w-full rounded-xl border border-line bg-white px-3 py-3"
-                id="phone"
-                inputMode="tel"
-                onChange={(event) => setPhone(event.target.value)}
-                placeholder="+2348012345678"
-                required
-                type="tel"
-                value={phone}
-              />
-              <button className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-brand-ink disabled:opacity-60" disabled={busy} type="submit">
-                {busy
-                  ? "Sending code…"
-                  : mode === "sign-up"
-                    ? "Send sign-up code"
-                    : "Send sign-in code"}
+
+            <form className="auth-form" onSubmit={submit}>
+              <div className="auth-field">
+                <label htmlFor="email">Email address</label>
+                <input
+                  autoComplete="email"
+                  id="email"
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  type="email"
+                  value={email}
+                />
+              </div>
+              <div className="auth-field">
+                <label htmlFor="password">Password</label>
+                <input
+                  autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
+                  id="password"
+                  onChange={(event) => setPassword(event.target.value)}
+                  minLength={mode === "sign-up" ? 8 : undefined}
+                  required
+                  type="password"
+                  value={password}
+                />
+                {mode === "sign-up" && <span className="auth-field-hint">Use at least 8 characters.</span>}
+              </div>
+              <button className="auth-submit" disabled={busy} type="submit">
+                {busy ? "Please wait…" : mode === "sign-up" ? "Create account" : "Sign in"}
+                {!busy && <span aria-hidden="true">→</span>}
               </button>
             </form>
-          </>
-        ) : (
-          <form className="mt-6 space-y-4" onSubmit={verifyCode}>
-            <label className="block text-sm font-medium" htmlFor="code">SMS verification code</label>
-            <input
-              autoComplete="one-time-code"
-              className="w-full rounded-xl border border-line bg-white px-3 py-3"
-              id="code"
-              inputMode="numeric"
-              onChange={(event) => setCode(event.target.value)}
-              required
-              type="text"
-              value={code}
-            />
-            <button className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-brand-ink disabled:opacity-60" disabled={busy} type="submit">
-              {busy ? "Verifying…" : mode === "sign-up" ? "Verify and create account" : "Verify and sign in"}
-            </button>
+
+            <div className="auth-divider"><span>or continue with</span></div>
+
             <button
-              className="w-full text-sm underline underline-offset-4"
+              className="auth-google"
               disabled={busy}
-              onClick={() => { setStage("phone"); setCode(""); setError(""); setMessage(""); }}
+              onClick={() => void signInWithGoogle()}
               type="button"
             >
-              Use a different phone number
+              <svg aria-hidden="true" viewBox="0 0 48 48">
+                <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z" />
+                <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.8l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8v5.3A20 20 0 0 0 24 44Z" />
+                <path fill="#FBBC05" d="M12.6 27.7a12 12 0 0 1 0-7.4V15H5.8a20 20 0 0 0 0 18l6.8-5.3Z" />
+                <path fill="#EA4335" d="M24 11.9c3 0 5.7 1 7.8 3.1l5.8-5.8C34.1 5.8 29.5 4 24 4A20 20 0 0 0 5.8 15l6.8 5.3c1.6-4.8 6.1-8.4 11.4-8.4Z" />
+              </svg>
+              Continue with Google
             </button>
-          </form>
-        )}
 
-        {message && <p className="mt-4 text-sm text-brand" role="status">{message}</p>}
-        {error && <p className="mt-4 text-sm text-red-700" role="alert">{error}</p>}
-        <p className="mt-6 text-xs text-muted">
-          SMS sign-in must be enabled for your Supabase project. Don&apos;t share your verification code with anyone.
-        </p>
-      </section>
+            {message && <p className="auth-message" role="status">{message}</p>}
+            {(error || initialError) && (
+              <p className="auth-error" role="alert">{error || initialError}</p>
+            )}
+            <p className="auth-legal">
+              By continuing, you agree to use Errand Runs responsibly. We&apos;ll only use your account details to provide the service.
+            </p>
+          </section>
+        </div>
+
+        <footer className="auth-footer">
+          <span>Errand Runs · Lagos</span>
+          <span>Everyday help, on the move.</span>
+        </footer>
+      </div>
     </main>
   );
 }
